@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="viewmodel"
+            type="com.example.demomvvm.viewmodel.WeatherViewModel" />
+
+        <variable
+            name="main"
+            type="com.example.demomvvm.view.WeatherActivity" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+
+        <TextView
+            android:id="@+id/name"
+            android:layout_width="353dp"
+            android:layout_height="131dp"
+            android:background="@color/colorAccent"
+            android:gravity="center"
+            android:text="@{viewmodel.name}"
+            android:textColor="#1145FF"
+            android:textSize="30sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <LinearLayout
+            android:id="@+id/nhietdo"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_gravity="center"
+            android:background="#FFDD00"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="@id/name"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/name"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+
+                android:id="@+id/temp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@{String.valueOf(viewmodel.temp)}"
+                android:textSize="80sp" />
+
+            <TextView
+                android:id="@+id/humidity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:background="@color/colorPrimary"
+                android:text="@{String.valueOf(viewmodel.humidity)}"
+                android:textSize="20sp" />
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/imgcloud"
+            android:layout_width="100dp"
+            android:layout_height="0dp"
+            android:src="@drawable/may"
+            app:layout_constraintBottom_toBottomOf="@id/clouds"
+            app:layout_constraintEnd_toStartOf="@id/clouds"
+            app:layout_constraintHorizontal_chainStyle="spread_inside"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/clouds" />
+
+        <TextView
+            android:id="@+id/clouds"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:autoSizeTextType="uniform"
+            android:padding="5dp"
+            android:text="@{String.valueOf(viewmodel.cloud ) }"
+            app:layout_constraintBottom_toTopOf="@+id/pressure"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/imgcloud"
+            app:layout_constraintTop_toBottomOf="@+id/name" />
+
+        <ImageView
+            android:src="@drawable/apsuat"
+            android:id="@+id/imgPressure"
+            android:layout_width="100dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="@id/pressure"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/pressure" />
+
+        <TextView
+            android:id="@+id/pressure"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:autoSizeTextType="uniform"
+            android:padding="5dp"
+            android:text="@{String.valueOf(viewmodel.pressure)}"
+            app:layout_constraintBottom_toTopOf="@id/windr"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/imgPressure"
+            app:layout_constraintTop_toBottomOf="@id/clouds" />
+
+
+        <ImageView
+            android:padding="5sp"
+            android:src="@drawable/huongio"
+            android:id="@+id/imgWindr"
+            android:layout_width="100dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="@id/windr"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/windr" />
+
+        <TextView
+
+            android:id="@+id/windr"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:autoSizeTextType="uniform"
+            android:padding="5dp"
+            android:text="@{String.valueOf(viewmodel.windr)}"
+            app:layout_constraintBottom_toTopOf="@id/winsp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/imgWindr"
+            app:layout_constraintTop_toBottomOf="@+id/pressure"
+            app:layout_constraintVertical_bias="1.0" />
+
+        <ImageView
+            android:scaleType="fitXY"
+            android:src="@drawable/tocodgio"
+            app:layout_constraintBottom_toBottomOf="@id/winsp"
+            app:layout_constraintTop_toTopOf="@id/winsp"
+            app:layout_constraintStart_toStartOf="parent"
+            android:id="@+id/imgWinsp"
+            android:layout_width="100dp"
+            android:layout_height="0dp" />
+
+        <TextView
+
+            android:id="@+id/winsp"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:autoSizeTextType="uniform"
+            android:padding="5dp"
+            android:text="@{String.valueOf(viewmodel.winsp)}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/imgWinsp"
+            app:layout_constraintTop_toBottomOf="@+id/windr" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

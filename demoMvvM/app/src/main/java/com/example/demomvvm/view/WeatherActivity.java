@@ -41,6 +41,8 @@ public class WeatherActivity extends AppCompatActivity {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_weather);
         binding.setLifecycleOwner(this);
         binding.setViewmodel(weatherViewModel);
+//        weatherViewModel.loadData();
+
         if (isNetworkAvailable(this)){
             weatherViewModel.loadData();
             Toast.makeText(this, "network aviable", Toast.LENGTH_SHORT).show();
@@ -51,13 +53,7 @@ public class WeatherActivity extends AppCompatActivity {
             weatherViewModel.getWeatherModelLiveData().observe(this, new Observer<WeatherModel>() {
                 @Override
                 public void onChanged(WeatherModel weatherModel) {
-                    binding.name.setText(""+weatherModel.name);
-                    binding.clouds.setText(""+weatherModel.cloud);
-                    binding.humidity.setText(""+weatherModel.humidity);
-                    binding.pressure.setText(""+weatherModel.pressure);
-                    binding.temp.setText(""+weatherModel.temp);
-                    binding.windr.setText(""+weatherModel.windr);
-                    binding.winsp.setText(""+weatherModel.winsp);
+                    weatherViewModel.getdatabase();
                 }
             });
         }

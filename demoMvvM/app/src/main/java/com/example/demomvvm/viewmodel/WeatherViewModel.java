@@ -4,7 +4,11 @@ import android.app.Application;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.Observer;
+
 import com.example.demomvvm.model.WeatherModel.WeatherDigital;
+import com.example.demomvvm.remote.database.WeatherDao;
 import com.example.demomvvm.remote.database.WeatherModel;
 import com.example.demomvvm.remote.retrofit.ApiUtils;
 import com.example.demomvvm.remote.retrofit.SOService;
@@ -15,6 +19,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -34,26 +39,27 @@ public class WeatherViewModel extends AndroidViewModel {
     WeatherRepository weatherRepository;
     LiveData<WeatherModel> weatherModelLiveData;
 
+
+
     public WeatherViewModel(@NonNull Application application) {
         super(application);
-        this.name.setValue("Home");
         weatherRepository = new WeatherRepository(application);
         weatherModelLiveData = weatherRepository.getData();
-
-        this.pressure.setValue(0);
-        this.windr.setValue(0);
-        this.humidity.setValue(0);
-        this.temp.setValue(0.00);
-        this.cloud.setValue(0);
-        this.winsp.setValue(0.00);
         mService = ApiUtils.getSOService();
-
-
+        setdata("home", 0, 0, 0, 0.0, 0, 0.0);
     }
 
-    public LiveData<WeatherModel> getWeatherModelLiveData() {
-        return weatherModelLiveData;
+
+    public void setdata(String name, int pressure, int windr, int humidity, double temp, int cloud, double winsp) {
+        this.name.setValue(name);
+        this.pressure.setValue(pressure);
+        this.windr.setValue(windr);
+        this.humidity.setValue(humidity);
+        this.temp.setValue(temp);
+        this.cloud.setValue(cloud);
+        this.winsp.setValue(winsp);
     }
+
 
     public void loadData() {
         mService.EXAMPLE_CALL().enqueue(new Callback<WeatherDigital>() {
@@ -63,52 +69,52 @@ public class WeatherViewModel extends AndroidViewModel {
                 if (response.isSuccessful()) {
                     WeatherDigital resultApi;
                     resultApi = response.body();
+
+
                     String names = resultApi.getName();
-                    double tempC = Math.round(resultApi.getMain().getTemp() / 1.8);
+                    double tempC = Math.round(resultApi.getMain().getTemp() - 275.15);
                     int Presssure = resultApi.getMain().getPressure();
                     int Humidity = resultApi.getMain().getHumidity();
                     int clouds = resultApi.getClouds().getAll();
                     double winspe = resultApi.getWind().getSpeed();
                     int windrect = resultApi.getWind().getDeg();
+
+
                     WeatherModel weatherModel = new WeatherModel(names,
-                                                                tempC,
-                                                                Presssure,
-                                                                Humidity,
-                                                                clouds,
-                                                                winspe,
-                                                                windrect);
-                                    //
+                            tempC,
+                            Presssure,
+                            Humidity,
+                            clouds,
+                            winspe,
+                            windrect);
 
                     insertdata(weatherModel);
-
-
-                    temp.setValue(tempC);
-                    name.setValue(names);
-                    winsp.setValue(winspe);
-                    cloud.setValue(clouds);
-                    humidity.setValue(Humidity);
-                    pressure.setValue(Presssure);
-                    windr.setValue(windrect);
-                    Log.d("Log", "posts loaded from API");
+                    setdata(names, Presssure, windrect, Humidity, tempC, clouds, winspe);
                     Toast.makeText(getApplication(), "ok", Toast.LENGTH_SHORT).show();
 
                 } else {
                     int statusCode = response.code();
-                    // handle request errors depending on status code
-
-                    Log.d("Log", "posts loaded from API error" + statusCode);
+                    Toast.makeText(getApplication(), "" + statusCode, Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<WeatherDigital> call, Throwable t) {
                 Toast.makeText(getApplication(), "offline", Toast.LENGTH_SHORT).show();
+                Log.d("log", "khong ket noi");
 
+//                getWeatherModelLiveData();
+
+               // getWeatherModelLiveData();
+//                String s;
+//                Log.d("log1",""+ weatherModelLiveData.getValue().name);
+//                getdatabase();
             }
         });
 
 
     }
+
 
 
     public void insertdata(WeatherModel weatherModel) {
@@ -117,5 +123,24 @@ public class WeatherViewModel extends AndroidViewModel {
 
     }
 
+
+
+
+    public LiveData<WeatherModel> getWeatherModelLiveData() {
+        return weatherModelLiveData;
+    }
+
+
+
+    public void getdatabase() {
+
+        setdata(weatherModelLiveData.getValue().name,
+                weatherModelLiveData.getValue().pressure,
+                weatherModelLiveData.getValue().windr,
+                weatherModelLiveData.getValue().humidity,
+                weatherModelLiveData.getValue().temp,
+                weatherModelLiveData.getValue().cloud,
+                weatherModelLiveData.getValue().winsp);
+    }
 
 }

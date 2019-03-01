@@ -47,6 +47,9 @@ public class WeatherModel {
         this.windr = windr;
     }
 
+    public WeatherModel(){
+
+    }
     @NonNull
     public String getName() {
         return name;

@@ -7,25 +7,22 @@ import android.util.Log;
 import com.example.demomvvm.remote.database.WeatherDao;
 import com.example.demomvvm.remote.database.WeatherDatabase;
 import com.example.demomvvm.remote.database.WeatherModel;
-import com.example.demomvvm.remote.retrofit.ApiUtils;
-import com.example.demomvvm.remote.retrofit.SOService;
+
+import javax.xml.transform.Result;
 
 import androidx.lifecycle.LiveData;
 
 public class WeatherRepository {
     private WeatherDao weatherDao;
     public LiveData<WeatherModel> weatherModel;
-    private SOService mService;
 
 
     public WeatherRepository(Application application) {
         WeatherDatabase db = WeatherDatabase.getDatabase(application);
         weatherDao = db.weatherDao();
         weatherModel = weatherDao.getdata();
-        this.mService = ApiUtils.getSOService();
+
     }
-
-
 
 
     public void insert(WeatherModel weatherModel) {
@@ -49,27 +46,60 @@ public class WeatherRepository {
     }
 
     public LiveData<WeatherModel> getData() {
-        new getdataAsynctask(weatherDao).execute();
+        getdataAsynctask mgetdataAsynctask = new getdataAsynctask(weatherDao);
+        mgetdataAsynctask.execute();
+
         return weatherModel;
     }
 
-    private static class getdataAsynctask extends AsyncTask<WeatherModel, Void, Void> {
+    //    private static class getdataAsynctask extends AsyncTask<Void, Void, WeatherModel> {
+//        WeatherDao aSyncweatherDao;
+//        WeatherModel weatherModelresult;
+//
+//
+//        public getdataAsynctask(WeatherDao aSyncweatherDao) {
+//            this.aSyncweatherDao = aSyncweatherDao;
+//        }
+//
+//
+//        @Override
+//        protected WeatherModel doInBackground(Void... voids) {
+//            aSyncweatherDao.getdata();
+//
+//            return weatherModelresult;
+//        }
+//
+//
+//        @Override
+//        protected void onPostExecute(WeatherModel weatherModel) {
+//            Log.d("postexcute", "" + weatherModel.name);
+//            super.onPostExecute(weatherModel);
+//        }
+//    }
+    private static class getdataAsynctask extends AsyncTask<Void, Void, WeatherModel> {
         WeatherDao aSyncweatherDao;
-
+        WeatherModel weatherModeresult;
         public getdataAsynctask(WeatherDao aSyncweatherDao) {
             this.aSyncweatherDao = aSyncweatherDao;
         }
 
+
         @Override
-        protected Void doInBackground(WeatherModel... weatherModels) {
+        protected WeatherModel doInBackground(Void... voids) {
             aSyncweatherDao.getdata();
-            return null;
+            Log.d("asynctask", "background");
 
+            return weatherModeresult;
         }
+
+        @Override
+        protected void onPostExecute(WeatherModel weatherModel) {
+            super.onPostExecute(weatherModel);
+            Log.d("asynctask", "result"+weatherModeresult);
+        }
+
+
     }
-
-
-
 
 
 }

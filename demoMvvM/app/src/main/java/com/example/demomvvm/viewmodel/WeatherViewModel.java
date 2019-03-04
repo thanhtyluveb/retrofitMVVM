@@ -86,12 +86,12 @@ public class WeatherViewModel extends AndroidViewModel {
 
 
                     WeatherModel weatherModel = new WeatherModel(names,
-                            tempC,
-                            Presssure,
-                            Humidity,
-                            clouds,
-                            winspe,
-                            windrect);
+                                                                tempC,
+                                                                Presssure,
+                                                                Humidity,
+                                                                clouds,
+                                                                winspe,
+                                                                windrect);
 
                     insertdata(weatherModel);
                     setdata(names, Presssure, windrect, Humidity, tempC, clouds, winspe);

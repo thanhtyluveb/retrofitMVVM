@@ -3,12 +3,20 @@ package com.example.demomvvm.utility;
 import android.app.Application;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
 
+import com.example.demomvvm.model.WeatherModel.WeatherDigital;
 import com.example.demomvvm.remote.database.WeatherDao;
 import com.example.demomvvm.remote.database.WeatherDatabase;
 import com.example.demomvvm.remote.database.WeatherModel;
+import com.example.demomvvm.remote.retrofit.ApiUtils;
+import com.example.demomvvm.remote.retrofit.SOService;
 
-import javax.xml.transform.Result;
+import androidx.lifecycle.LiveData;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 
 import androidx.lifecycle.LiveData;
 
@@ -46,39 +54,15 @@ public class WeatherRepository {
     }
 
     public LiveData<WeatherModel> getData() {
-        getdataAsynctask mgetdataAsynctask = new getdataAsynctask(weatherDao);
-        mgetdataAsynctask.execute();
-
+        new getdataAsynctask(weatherDao).execute();
         return weatherModel;
     }
 
-    //    private static class getdataAsynctask extends AsyncTask<Void, Void, WeatherModel> {
-//        WeatherDao aSyncweatherDao;
-//        WeatherModel weatherModelresult;
-//
-//
-//        public getdataAsynctask(WeatherDao aSyncweatherDao) {
-//            this.aSyncweatherDao = aSyncweatherDao;
-//        }
-//
-//
-//        @Override
-//        protected WeatherModel doInBackground(Void... voids) {
-//            aSyncweatherDao.getdata();
-//
-//            return weatherModelresult;
-//        }
-//
-//
-//        @Override
-//        protected void onPostExecute(WeatherModel weatherModel) {
-//            Log.d("postexcute", "" + weatherModel.name);
-//            super.onPostExecute(weatherModel);
-//        }
-//    }
+
     private static class getdataAsynctask extends AsyncTask<Void, Void, WeatherModel> {
         WeatherDao aSyncweatherDao;
         WeatherModel weatherModeresult;
+
         public getdataAsynctask(WeatherDao aSyncweatherDao) {
             this.aSyncweatherDao = aSyncweatherDao;
         }
@@ -89,13 +73,14 @@ public class WeatherRepository {
             aSyncweatherDao.getdata();
             Log.d("asynctask", "background");
 
-            return weatherModeresult;
+            return null;
         }
 
         @Override
         protected void onPostExecute(WeatherModel weatherModel) {
             super.onPostExecute(weatherModel);
-            Log.d("asynctask", "result"+weatherModeresult);
+
+            Log.d("asynctask", "result" + weatherModeresult);
         }
 
 

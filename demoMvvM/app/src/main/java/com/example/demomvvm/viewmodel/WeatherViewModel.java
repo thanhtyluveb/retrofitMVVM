@@ -1,6 +1,9 @@
 package com.example.demomvvm.viewmodel;
 
 import android.app.Application;
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -40,13 +43,14 @@ public class WeatherViewModel extends AndroidViewModel {
     LiveData<WeatherModel> weatherModelLiveData;
 
 
-
     public WeatherViewModel(@NonNull Application application) {
         super(application);
         weatherRepository = new WeatherRepository(application);
         weatherModelLiveData = weatherRepository.getData();
         mService = ApiUtils.getSOService();
         setdata("home", 0, 0, 0, 0.0, 0, 0.0);
+        loadData();
+
     }
 
 
@@ -62,6 +66,7 @@ public class WeatherViewModel extends AndroidViewModel {
 
 
     public void loadData() {
+
         mService.EXAMPLE_CALL().enqueue(new Callback<WeatherDigital>() {
             @Override
             public void onResponse(Call<WeatherDigital> call, Response<WeatherDigital> response) {
@@ -102,13 +107,12 @@ public class WeatherViewModel extends AndroidViewModel {
             public void onFailure(Call<WeatherDigital> call, Throwable t) {
                 Toast.makeText(getApplication(), "offline", Toast.LENGTH_SHORT).show();
                 Log.d("log", "khong ket noi");
-
-//                getWeatherModelLiveData();
-
-               // getWeatherModelLiveData();
-//                String s;
-//                Log.d("log1",""+ weatherModelLiveData.getValue().name);
-//                getdatabase();
+                weatherModelLiveData.observe((LifecycleOwner) getApplication(), new Observer<WeatherModel>() {
+                    @Override
+                    public void onChanged(WeatherModel weatherModel) {
+                        getdatabase();
+                    }
+                });
             }
         });
 
@@ -116,20 +120,11 @@ public class WeatherViewModel extends AndroidViewModel {
     }
 
 
-
     public void insertdata(WeatherModel weatherModel) {
         weatherRepository.insert(weatherModel);
         Log.d("insert", "ok");
 
     }
-
-
-
-
-    public LiveData<WeatherModel> getWeatherModelLiveData() {
-        return weatherModelLiveData;
-    }
-
 
 
     public void getdatabase() {
@@ -142,5 +137,6 @@ public class WeatherViewModel extends AndroidViewModel {
                 weatherModelLiveData.getValue().cloud,
                 weatherModelLiveData.getValue().winsp);
     }
+
 
 }
